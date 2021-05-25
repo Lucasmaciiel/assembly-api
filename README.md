@@ -19,5 +19,5 @@ Essa solução deve ser executada na nuvem e promover as seguintes funcionalidad
 
 #**Informações**
 
-* Endereço da API: http://heroku.com
+* Endereço da API: https://votacao-assembleias.herokuapp.com/
 * Para acessar a documentação no Swagger - http://localhost:8080/assembleia-api/swagger-ui.html
