@@ -24,7 +24,7 @@ public class PautaService {
 
     public void delete(Pauta pauta) {
         if (pauta == null || pauta.getId() == null)
-            throw new IllegalArgumentException("Pauta invalid");
+            throw new IllegalArgumentException("Pauta inválida");
         repository.delete(pauta);
     }
 

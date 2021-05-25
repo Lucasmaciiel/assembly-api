@@ -21,10 +21,10 @@ public class PautaController {
 
     private final PautaService pautaService;
 
-    @ApiOperation(value = "Create a Pauta")
+    @ApiOperation(value = "Cadastra uma Pauta")
     @PostMapping
-    @ApiResponses(value = {@ApiResponse(code = 201, message = "Returns when a pauta is successfully created"),
-            @ApiResponse(code = 400, message = "Validation error")
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "Retorna quando uma pauta é criada com sucesso"),
+            @ApiResponse(code = 400, message = "Erro de validação")
     })
     public ResponseEntity<Pauta> save(@Valid @RequestBody Pauta pauta) {
         this.pautaService.save(pauta);
@@ -32,42 +32,42 @@ public class PautaController {
     }
 
     @CrossOrigin
-    @ApiOperation(value = "Search for a pauta by Id")
+    @ApiOperation(value = "Busca uma pauta por ID")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Returns when the pauta was found successfully"),
-            @ApiResponse(code = 404, message = "Returns when the pauta does not exist")
+            @ApiResponse(code = 200, message = "Retorna quando a pauta foi encontrada com sucesso"),
+            @ApiResponse(code = 404, message = "Retorna quando a pauta não existe")
     })
     @GetMapping("/{id}")
     public ResponseEntity<Pauta> findById(@PathVariable("id") Integer id) {
-        Optional<Pauta> product = this.pautaService.findById(id);
-        return product.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
+        Optional<Pauta> pauta = this.pautaService.findById(id);
+        return pauta.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
                 .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @CrossOrigin
-    @ApiOperation(value = "Delete a pauta")
+    @ApiOperation(value = "Deleta uma pauta")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Returns when the pauta is successfully deleted"),
-            @ApiResponse(code = 404, message = "Returns when the pauta does not exist")
+            @ApiResponse(code = 200, message = "Retorna quando a pauta é deletada com sucesso"),
+            @ApiResponse(code = 404, message = "Retorna quando a pauta não existe")
     })
     @DeleteMapping("/{id}")
     public ResponseEntity<?> delete(@PathVariable("id") Integer id) {
-        Optional<Pauta> product = this.pautaService.findById(id);
-        return product.map(value -> {
+        Optional<Pauta> pauta = this.pautaService.findById(id);
+        return pauta.map(value -> {
             this.pautaService.delete(value);
             return new ResponseEntity<>(HttpStatus.OK);
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @CrossOrigin
-    @ApiOperation(value = "Pauta list")
+    @ApiOperation(value = "Retorna uma lista de Pautas")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Returns when the pauta were found successfully or the pauta list is empty")
+            @ApiResponse(code = 200, message = "Retorna quando a pauta foi encontrada com sucesso ou a lista de pauta está vazia")
     })
     @GetMapping
     public ResponseEntity<List<Pauta>> findAll() {
-        List<Pauta> products = this.pautaService.findAll();
-        return new ResponseEntity<>(products, HttpStatus.OK);
+        List<Pauta> pautas = pautaService.findAll();
+        return new ResponseEntity<>(pautas, HttpStatus.OK);
 
     }
 }

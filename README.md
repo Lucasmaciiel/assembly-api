@@ -1,4 +1,5 @@
-#Desafio técnico - Objetivo
+#**Desafio técnico - Objetivo**
+
 No cooperativismo, cada associado possui um voto e as decisões são tomadas em assembleias, por votação. Imagine que você deve criar uma solução para dispositivos móveis para gerenciar e participar dessas sessões de votação. 
 
 Essa solução deve ser executada na nuvem e promover as seguintes funcionalidades através de uma API REST:
@@ -15,3 +16,8 @@ Essa solução deve ser executada na nuvem e promover as seguintes funcionalidad
 - Tarefa Bônus 1 - Integração com sistemas externos
 - Tarefa Bônus 2 - Performance
 - Tarefa Bônus 3 - Versionamento da API
+
+#**Informações**
+
+* Endereço da API: http://heroku.com
+* Para acessar a documentação no Swagger - http://localhost:8080/assembleia-api/swagger-ui.html

@@ -1,9 +1,6 @@
 package com.lmg.desafiojavaspringboot.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
@@ -15,6 +12,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Builder
 public class Pauta implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -25,7 +23,7 @@ public class Pauta implements Serializable {
     private Integer id;
 
     @Column(name = "name")
-    @NotEmpty(message = "Field name is required")
+    @NotEmpty(message = "Campo nome é obrigatório")
     private String name;
 
 }
