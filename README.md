@@ -13,11 +13,10 @@ Essa solução deve ser executada na nuvem e promover as seguintes funcionalidad
 
 É importante que as pautas e os votos sejam persistidos e que não sejam perdidos com o restart da aplicação.
 
-- Tarefa Bônus 1 - Integração com sistemas externos
-- Tarefa Bônus 2 - Performance
-- Tarefa Bônus 3 - Versionamento da API
 
 #**Informações**
 
-* Endereço da API: https://votacao-assembleias.herokuapp.com/
+* Endereço da API: http://localhost:8080/assembleia-api/
 * Para acessar a documentação no Swagger - http://localhost:8080/assembleia-api/swagger-ui.html
+
+Obs: Ao rodar o projeto localmente verificar a porta do postgresql, username e password no arquivo application.properties
