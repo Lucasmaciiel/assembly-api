@@ -1,5 +1,6 @@
 package com.lmg.desafiojavaspringboot.service;
 
+import com.lmg.desafiojavaspringboot.exception.EntidadeNaoEncontradaException;
 import com.lmg.desafiojavaspringboot.model.Pauta;
 import com.lmg.desafiojavaspringboot.repository.PautaRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,10 @@ public class PautaService {
     }
 
     public Optional<Pauta> findById(Integer id) {
-        return repository.findById(id);
+        Optional<Pauta> idPesquisado = repository.findById(id);
+        if (!idPesquisado.isPresent())
+            throw new EntidadeNaoEncontradaException("Pauta com ID: " + id + " não existe");
+        return idPesquisado;
     }
 
     public void delete(Pauta pauta) {

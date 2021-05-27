@@ -1,7 +1,10 @@
 package com.lmg.desafiojavaspringboot.controller;
 
+import com.lmg.desafiojavaspringboot.assembler.PautaModelAssembler;
+import com.lmg.desafiojavaspringboot.dto.PautaDTO;
 import com.lmg.desafiojavaspringboot.model.Pauta;
 import com.lmg.desafiojavaspringboot.service.PautaService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
@@ -17,18 +20,19 @@ import java.util.Optional;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("pauta")
+@Api (value = "Pauta", tags = {"Pauta"})
 public class PautaController {
 
     private final PautaService pautaService;
+    private final PautaModelAssembler pautaModelAssembler;
 
-    @ApiOperation(value = "Cadastra uma Pauta")
+    @ApiOperation(value = "Cadastra uma Pauta", nickname = "Pauta teste")
     @PostMapping
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Retorna quando uma pauta é criada com sucesso"),
             @ApiResponse(code = 400, message = "Erro de validação")
     })
-    public ResponseEntity<Pauta> save(@Valid @RequestBody Pauta pauta) {
-        this.pautaService.save(pauta);
-        return new ResponseEntity<>(pauta, HttpStatus.CREATED);
+    public ResponseEntity<PautaDTO> save(@Valid @RequestBody Pauta pauta) {
+        return new ResponseEntity<>(pautaModelAssembler.toModel(this.pautaService.save(pauta)), HttpStatus.CREATED);
     }
 
     @CrossOrigin
@@ -38,10 +42,9 @@ public class PautaController {
             @ApiResponse(code = 404, message = "Retorna quando a pauta não existe")
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Pauta> findById(@PathVariable("id") Integer id) {
-        Optional<Pauta> pauta = this.pautaService.findById(id);
-        return pauta.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<PautaDTO> findById(@PathVariable("id") Integer id) {
+        Optional<Pauta> obj = this.pautaService.findById(id);
+        return new ResponseEntity<>(pautaModelAssembler.toModel(obj.get()), HttpStatus.OK);
     }
 
     @CrossOrigin
@@ -65,9 +68,7 @@ public class PautaController {
             @ApiResponse(code = 200, message = "Retorna quando a pauta foi encontrada com sucesso ou a lista de pauta está vazia")
     })
     @GetMapping
-    public ResponseEntity<List<Pauta>> findAll() {
-        List<Pauta> pautas = pautaService.findAll();
-        return new ResponseEntity<>(pautas, HttpStatus.OK);
-
+    public ResponseEntity<List<PautaDTO>> findAll() {
+        return new ResponseEntity<>(pautaModelAssembler.toCollectionDTO(pautaService.findAll()), HttpStatus.OK);
     }
 }

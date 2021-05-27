@@ -1,8 +1,13 @@
 package com.lmg.desafiojavaspringboot.controller;
 
+import com.lmg.desafiojavaspringboot.assembler.VotoModelAssembler;
+import com.lmg.desafiojavaspringboot.dto.VotoDTO;
 import com.lmg.desafiojavaspringboot.model.Voto;
 import com.lmg.desafiojavaspringboot.service.VotoService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,37 +19,45 @@ import java.util.Optional;
 @RestController
 @AllArgsConstructor
 @RequestMapping("voto")
+@Api(value = "Voto", tags = {"Voto"})
 public class VotoController {
 
     private final VotoService votoService;
+    private final VotoModelAssembler votoModelAssembler;
 
     @ApiOperation(value = "Cria um voto")
     @PostMapping("/pautas/{idPauta}/sessoes/{idSessao}/votos")
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public Voto save(@PathVariable Integer idPauta, @PathVariable Integer idSessao, @RequestBody Voto voto) {
-        return votoService.createVoto(idPauta, idSessao, voto);
+    @ApiResponses(value = {@ApiResponse(code = 201, message = "Retorna quando um voto é realizado com sucesso")
+    })
+    public ResponseEntity<VotoDTO> save(@PathVariable Integer idPauta, @PathVariable Integer idSessao, @RequestBody Voto voto) {
+        Voto obj = votoService.createVoto(idPauta, idSessao, voto);
+        return new ResponseEntity<>(votoModelAssembler.toModel(obj), HttpStatus.CREATED);
     }
 
     @ApiOperation(value = "Retorna todos os votos")
     @GetMapping("/pautas/sessoes/votos")
-    public ResponseEntity<List<Voto>> findAll() {
-        List<Voto> votos = votoService.findAll();
-        return new ResponseEntity<>(votos, HttpStatus.OK);
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retorna quando o voto foi encontrado com sucesso ou a lista de votos está vazia")
+    })
+    public ResponseEntity<List<VotoDTO>> findAll() {
+        return new ResponseEntity<>(votoModelAssembler.toCollectionDTO(votoService.findAll()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Busca voto pelo ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Retorna quando o voto foi encontrado com sucesso")
+    })
     @GetMapping("/pautas/sessoes/votos/{id}")
-    public ResponseEntity<Voto> findById(@PathVariable Integer id) {
-        Optional<Voto> votos = Optional.ofNullable(this.votoService.findById(id));
-        return votos.map(value -> new ResponseEntity<>(value, HttpStatus.OK))
-                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<VotoDTO> findById(@PathVariable Integer id) {
+        Voto obj = this.votoService.findById(id);
+        return new ResponseEntity<>(votoModelAssembler.toModel(obj), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Busca voto pelo ID da Pauta")
     @GetMapping("/pautas/{id}/sessoes/votos")
     @ResponseStatus(code = HttpStatus.OK)
-    public List<Voto> findVotosByPautaId(@PathVariable Integer id) {
-        return votoService.findVotosByPautaId(id);
+    public List<VotoDTO> findVotosByPautaId(@PathVariable Integer id) {
+        return votoModelAssembler.toCollectionDTO(votoService.findVotosByPautaId(id));
     }
 
     @ApiOperation(value = "Deleta um Voto")

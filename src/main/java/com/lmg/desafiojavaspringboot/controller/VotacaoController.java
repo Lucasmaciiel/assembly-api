@@ -2,6 +2,7 @@ package com.lmg.desafiojavaspringboot.controller;
 
 import com.lmg.desafiojavaspringboot.dto.VotacaoDTO;
 import com.lmg.desafiojavaspringboot.service.VotacaoService;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @AllArgsConstructor
 @RequestMapping("votacao")
+@Api(value = "Votação", tags = {"Votação"})
 public class VotacaoController {
 
     private final VotacaoService votacaoService;

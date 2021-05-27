@@ -21,9 +21,9 @@ public class Sessao {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sessao_seq")
     private Integer id;
 
-    private LocalDateTime startDate;
+    private LocalDateTime dataInicio;
 
-    private Integer minutesValidity;
+    private Integer minutosExpiracao;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Pauta pauta;

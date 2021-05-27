@@ -36,7 +36,7 @@ public class VotoService {
     public Voto findById(Integer id) {
         Optional<Voto> findById = votoRepository.findById(id);
         if (!findById.isPresent()) {
-            throw new EntidadeNaoEncontradaException("Voto não encontrado: " + id);
+            throw new EntidadeNaoEncontradaException("Voto não encontrado com o ID: " + id);
         }
         return findById.get();
     }
@@ -57,7 +57,7 @@ public class VotoService {
 
     protected void verifyVoto(final Sessao sessao, final Voto voto) {
 
-        LocalDateTime dataLimite = sessao.getStartDate().plusMinutes(sessao.getMinutesValidity());
+        LocalDateTime dataLimite = sessao.getDataInicio().plusMinutes(sessao.getMinutosExpiracao());
         if (LocalDateTime.now().isAfter(dataLimite)) {
             throw new SessaoExpiradaException("Tempo de sessão expirada");
         }
@@ -78,7 +78,7 @@ public class VotoService {
         ResponseEntity<ValidacaoCpfDTO> cpfValidation = getCpfValidation(voto);
         if (HttpStatus.OK.equals(cpfValidation.getStatusCode())) {
             if (CPF_UNABLE_TO_VOTE.equalsIgnoreCase(cpfValidation.getBody().getStatus())) {
-                throw new CpfNaoPodeExecutarEssaOperacaoException("Este CPF não pode executar essa operação");
+                throw new CpfNaoPodeExecutarEssaOperacaoException("Este CPF não pode executar essa operação, é necessário ser cooperado");
             }
         } else {
             throw new CpfInvalidoException("CPF inválido");

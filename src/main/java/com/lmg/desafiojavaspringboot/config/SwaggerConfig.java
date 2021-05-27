@@ -19,7 +19,7 @@ public class SwaggerConfig {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.lmg"))
-                .paths(PathSelectors.regex("/.*"))
+                .paths(PathSelectors.any())
                 .build().apiInfo(apiEndPointsInfo());
     }
 
