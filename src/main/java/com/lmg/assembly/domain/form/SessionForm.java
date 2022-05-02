@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 public class SessionForm {
 
-    private LocalDateTime dataInicio;
-    private Integer minutosExpiracao;
+    private LocalDateTime startDate;
+    private Integer sessionExpirationMinutes;
 
 }

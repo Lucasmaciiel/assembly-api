@@ -14,8 +14,8 @@ public class ModelMapperConfig {
         var modelMapper = new ModelMapper();
         //Mapeia as propriedades que o ModelMapper não consegue identificar pelo nome
         modelMapper.createTypeMap(Vote.class, VoteDTO.class)
-                .addMapping(Vote::getCpf, VoteDTO::setCpfCooperado)
-                .addMapping(Vote::getEscolha, VoteDTO::setOpcaoEscolhida);
+                .addMapping(Vote::getCpf, VoteDTO::setCpfCooperated)
+                .addMapping(Vote::getChoice, VoteDTO::setChosenOption);
         return modelMapper;
     }
 

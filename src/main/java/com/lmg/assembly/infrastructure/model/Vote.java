@@ -38,7 +38,7 @@ public class Vote implements Serializable {
     private String cpf;
 
     @NotNull(message = "A escolha é obrigatório para votar.")
-    private Boolean escolha;
+    private Boolean choice;
 
     @NotNull(message = "Necessário informar a Pauta para votar.")
     @ManyToOne(fetch = FetchType.EAGER)

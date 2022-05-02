@@ -1,6 +1,6 @@
-#**Desafio técnico - Objetivo**
+#**Assembleia API**
 
-No cooperativismo, cada associado possui um vote e as decisões são tomadas em assembleias, por votação. Imagine que você deve criar uma solução para dispositivos móveis para gerenciar e participar dessas sessões de votação. 
+No cooperativismo, cada associado possui um voto e as decisões são tomadas em assembleias, por votação. Imagine que você deve criar uma solução para dispositivos móveis para gerenciar e participar dessas sessões de votação. 
 
 Essa solução deve ser executada na nuvem e promover as seguintes funcionalidades através de uma API REST:
 
@@ -19,5 +19,5 @@ Essa solução deve ser executada na nuvem e promover as seguintes funcionalidad
 * Necessário instalar o banco postgres
 * Endereço da API: http://localhost:8080/assembleia-api/
 * Para acessar a documentação no Swagger - http://localhost:8080/assembleia-api/swagger-ui.html
-
-Obs: Ao rodar o projeto localmente verificar a porta do postgresql, username e password no arquivo application.properties
+* Para rodar os testes de Integração rodar o comando - ./mvnw verify
+* Obs: Ao rodar o projeto localmente verificar a porta do postgresql, username e password no arquivo application.properties

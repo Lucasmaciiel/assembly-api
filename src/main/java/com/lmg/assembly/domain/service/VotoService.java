@@ -30,7 +30,12 @@ import java.util.Optional;
 public class VotoService {
 
     private static final String CPF_UNABLE_TO_VOTE = "UNABLE_TO_VOTE";
-    public static final String VOTO_NAO_ENCONTRADO = "Voto não encontrado: ";
+    public static final String VOTE_NOT_FOUND = "Voto não encontrado com ID: ";
+    public static final String INVALID_SESSION = "Sessão inválida";
+    public static final String EXPIRED_SESSION = "Tempo de sessão expirada";
+    public static final String VOTE_ALREADY_EXISTS_FOR_THIS_CPF = "Voto ja existente para o CPF: ";
+    public static final String NECESSARY_TO_BE_COOPERATE = "Este CPF não pode executar essa operação, é necessário ser cooperado";
+    public static final String INVALID_CPF = "CPF inválido";
 
     @Value("${app.integracao.cpf.url}")
     private String urlCpfValidator = "";
@@ -46,17 +51,17 @@ public class VotoService {
     }
 
     public Vote findById(Integer id) {
-        Optional<Vote> findById = votoRepository.findById(id);
-        if (!findById.isPresent()) {
-            throw new EntityNotFoundException("Voto não encontrado com o ID: " + id);
+        var vote = votoRepository.findById(id);
+        if (!vote.isPresent()) {
+            throw new EntityNotFoundException(VOTE_NOT_FOUND + id);
         }
-        return findById.get();
+        return vote.get();
     }
 
     public Vote createVoto(Integer idPauta, Integer idSessao, Vote vote) {
         var sessao = sessaoService.findByIdAndPautaId(idSessao, idPauta);
         if (!idPauta.equals(sessao.getPauta().getId())) {
-            throw new SessionInvalidException("Sessão inválida");
+            throw new SessionInvalidException(INVALID_SESSION);
         }
         vote.setPauta(sessao.getPauta());
         return verifyAndSave(sessao, vote);
@@ -69,20 +74,20 @@ public class VotoService {
 
     protected void verifyVoto(final Session session, final Vote vote) {
 
-        LocalDateTime dataLimite = session.getDataInicio().plusMinutes(session.getMinutosExpiracao());
-        if (LocalDateTime.now().isAfter(dataLimite)) {
-            throw new SessionExpiredException("Tempo de sessão expirada");
+        LocalDateTime deadline = session.getStartDate().plusMinutes(session.getSessionExpirationMinutes());
+        if (LocalDateTime.now().isAfter(deadline)) {
+            throw new SessionExpiredException(EXPIRED_SESSION);
         }
 
-        cpfAbleToVote(vote);
-        votoAlreadyExists(vote);
+        this.cpfAbleToVote(vote);
+        this.voteAlreadyExists(vote);
     }
 
-    protected void votoAlreadyExists(final Vote vote) {
-        Optional<Vote> votoByCpfAndPauta = votoRepository.findByCpfAndPautaId(vote.getCpf(), vote.getPauta().getId());
+    protected void voteAlreadyExists(final Vote vote) {
+        Optional<Vote> voteByCpfAndPauta = votoRepository.findByCpfAndPautaId(vote.getCpf(), vote.getPauta().getId());
 
-        if (votoByCpfAndPauta.isPresent()) {
-            throw new VoteAlreadyExistsException("Voto ja existente para o CPF: " + vote.getCpf());
+        if (voteByCpfAndPauta.isPresent()) {
+            throw new VoteAlreadyExistsException(VOTE_ALREADY_EXISTS_FOR_THIS_CPF + vote.getCpf());
         }
     }
 
@@ -90,12 +95,11 @@ public class VotoService {
         ResponseEntity<ValidationCpfDTO> cpfValidation = getCpfValidation(vote);
         if (HttpStatus.OK.equals(cpfValidation.getStatusCode())) {
 
-
             if (CPF_UNABLE_TO_VOTE.equalsIgnoreCase(Objects.requireNonNull(cpfValidation.getBody()).getStatus())) {
-                throw new CpfCanNotExecuteThisOperationException("Este CPF não pode executar essa operação, é necessário ser cooperado");
+                throw new CpfCanNotExecuteThisOperationException(NECESSARY_TO_BE_COOPERATE);
             }
         } else {
-            throw new CpfInvalidException("CPF inválido");
+            throw new CpfInvalidException(INVALID_CPF);
         }
     }
 
@@ -103,7 +107,9 @@ public class VotoService {
         var headers = new HttpHeaders();
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        return restTemplate.exchange(urlCpfValidator.concat("/").concat(vote.getCpf()), HttpMethod.GET, entity,
+        return restTemplate
+                .exchange(urlCpfValidator.concat("/").concat(vote.getCpf()),
+                HttpMethod.GET, entity,
                 ValidationCpfDTO.class);
     }
 
@@ -112,9 +118,9 @@ public class VotoService {
     }
 
     public void delete(Integer id) {
-        Optional<Vote> votoById = votoRepository.findById(id);
+        var votoById = votoRepository.findById(id);
         if (!votoById.isPresent()) {
-            throw new EntityNotFoundException(VOTO_NAO_ENCONTRADO + id);
+            throw new EntityNotFoundException(VOTE_NOT_FOUND + id);
         }
         votoRepository.delete(votoById.get());
     }
@@ -123,7 +129,7 @@ public class VotoService {
         Optional<List<Vote>> findByPautaId = votoRepository.findByPautaId(id);
 
         if (!findByPautaId.isPresent()) {
-            throw new EntityNotFoundException(VOTO_NAO_ENCONTRADO + id);
+            throw new EntityNotFoundException(VOTE_NOT_FOUND + id);
         }
 
         return findByPautaId.get();

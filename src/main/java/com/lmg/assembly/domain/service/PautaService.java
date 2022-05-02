@@ -7,11 +7,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class PautaService {
+
+    public static final String INVALID_PAUTA = "Pauta inválida";
 
     private final PautaRepository repository;
 
@@ -27,8 +30,8 @@ public class PautaService {
     }
 
     public void delete(Pauta pauta) {
-        if (pauta == null || pauta.getId() == null)
-            throw new IllegalArgumentException("Pauta inválida");
+        if (Objects.isNull(pauta) || Objects.isNull(pauta.getId()))
+            throw new IllegalArgumentException(INVALID_PAUTA);
         repository.delete(pauta);
     }
 

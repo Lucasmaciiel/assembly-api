@@ -96,8 +96,8 @@ class SessaoAPITest {
 
         Session.builder()
                 .id(1)
-                .dataInicio(LocalDateTime.now())
-                .minutosExpiracao(10)
+                .startDate(LocalDateTime.now())
+                .sessionExpirationMinutes(10)
                 .pauta(pauta)
                 .build();
     }

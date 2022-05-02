@@ -15,8 +15,8 @@ import lombok.Setter;
 public class VoteDTO {
 
     private Integer id;
-    private String cpfCooperado;
-    private Boolean opcaoEscolhida;
+    private String cpfCooperated;
+    private Boolean chosenOption;
     private Pauta pauta;
 
 }

@@ -31,9 +31,9 @@ public class Session {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sessao_seq")
     private Integer id;
 
-    private LocalDateTime dataInicio;
+    private LocalDateTime startDate;
 
-    private Integer minutosExpiracao;
+    private Integer sessionExpirationMinutes;
 
     @ManyToOne(fetch = FetchType.EAGER)
     private Pauta pauta;

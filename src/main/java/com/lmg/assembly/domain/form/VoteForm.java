@@ -13,7 +13,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class VoteForm {
 
-    private String cpfCooperado;
-    private Boolean opcaoEscolhida;
+    private String cpfCooperated;
+    private Boolean choice; //opção escolhida
 
 }

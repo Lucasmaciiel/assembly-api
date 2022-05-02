@@ -35,13 +35,13 @@ public class SessionController {
     private final SessionModelMapper sessionModelMapper;
 
     @ApiOperation(value = "Abre uma sessão de votação em uma Pauta")
-    @PostMapping("pautas/{id}/sessoes")
+    @PostMapping("pautas/{idPauta}/sessoes")
     @ApiResponses(value = {@ApiResponse(code = 201, message = "Retorna quando uma sessão é criada com sucesso"),
             @ApiResponse(code = 404, message = "Retorna quando a pauta não existe")
     })
-    public ResponseEntity<SessionDTO> save(@PathVariable Integer id, @Valid @RequestBody SessionForm sessionForm) {
+    public ResponseEntity<SessionDTO> save(@PathVariable Integer idPauta, @Valid @RequestBody SessionForm sessionForm) {
         var session = sessionModelMapper.toModel(sessionForm);
-        Session obj = sessaoService.createSession(id, session);
+        Session obj = sessaoService.createSession(idPauta, session);
         return new ResponseEntity<>(sessionModelMapper.toDTO(obj), HttpStatus.CREATED);
     }
 

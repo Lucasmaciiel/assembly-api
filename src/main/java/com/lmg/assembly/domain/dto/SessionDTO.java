@@ -17,8 +17,8 @@ import java.time.LocalDateTime;
 public class SessionDTO {
 
     private Integer id;
-    private LocalDateTime dataInicio;
-    private Integer minutosExpiracao;
+    private LocalDateTime startDate;
+    private Integer sessionExpirationMinutes;
     private Pauta pauta;
 
 }

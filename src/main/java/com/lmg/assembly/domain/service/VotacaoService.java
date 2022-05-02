@@ -16,24 +16,15 @@ import java.util.Optional;
 @AllArgsConstructor
 public class VotacaoService {
 
+    public static final String VOTO_NAO_ENCONTRADO = "Voto não encontrado: ";
+    public static final String VOTACAO_NAO_ENCONTRADA = "Votação não encontrada";
+
     private final VotoRepository votoRepository;
     private final SessaoRepository sessaoRepository;
 
     public Vote save(final Vote vote) {
-        verifyIfExists(vote);
+        this.verifyIfExists(vote);
         return votoRepository.save(vote);
-    }
-
-    private void verifyIfExists(final Vote vote) throws BusinessException {
-        Optional<Vote> votoByCpfAndPauta = votoRepository.findByCpf(vote.getCpf());
-
-        if (votoByCpfAndPauta.isPresent() && (vote.isNew() || isNotUnique(vote, votoByCpfAndPauta.get()))) {
-            throw new BusinessException(null, null);
-        }
-    }
-
-    private boolean isNotUnique(Vote vote, Vote voteByCpfAndPauta) {
-        return vote.alreadyExist() && !voteByCpfAndPauta.equals(vote);
     }
 
     public List<Vote> findAll() {
@@ -41,9 +32,9 @@ public class VotacaoService {
     }
 
     public void delete(Vote vote) {
-        Optional<Vote> votoById = votoRepository.findById(vote.getId());
+        var votoById = votoRepository.findById(vote.getId());
         if (!votoById.isPresent()) {
-            throw new EntityNotFoundException("Voto não encontrado: " + vote.getId());
+            throw new EntityNotFoundException(VOTO_NAO_ENCONTRADO + vote.getId());
         }
         votoRepository.delete(vote);
     }
@@ -52,40 +43,61 @@ public class VotacaoService {
         Optional<List<Vote>> findByPautaId = votoRepository.findByPautaId(id);
 
         if (!findByPautaId.isPresent()) {
-            throw new EntityNotFoundException("Voto não encontrado: " + id);
+            throw new EntityNotFoundException(VOTO_NAO_ENCONTRADO + id);
         }
 
         return findByPautaId.get();
     }
 
-    public VotationDTO getResultVotacao(Integer id){
+    public VotationDTO getResultVotacao(Integer id) {
         return buildVotacaoPauta(id);
     }
 
 
+    /**
+     * Método que constrói o resultado da votação
+     *
+     * @param id
+     * @return
+     */
     public VotationDTO buildVotacaoPauta(Integer id) {
         Optional<List<Vote>> votosByPauta = votoRepository.findByPautaId(id);
         if (!votosByPauta.isPresent() || votosByPauta.get().isEmpty()) {
-            throw new EntityNotFoundException("Votação não encontrada");
+            throw new EntityNotFoundException(VOTACAO_NAO_ENCONTRADA);
         }
 
-        var pauta = votosByPauta.get().iterator().next().getPauta();
+        var votes = votosByPauta.get();
+
+        var pauta = votes.iterator().next().getPauta();
 
         Long totalSessoes = sessaoRepository.countByPautaId(pauta.getId());
 
-        Integer total = votosByPauta.get().size();
+        Integer total = votes.size();
 
-        Integer totalSim = (int) votosByPauta.get().stream().filter(voto -> Boolean.TRUE.equals(voto.getEscolha()))
+        Integer totalSim = (int) votes.stream().filter(voto -> Boolean.TRUE.equals(voto.getChoice()))
                 .count();
 
         Integer totalNao = total - totalSim;
 
         return VotationDTO.builder()
                 .pauta(pauta)
-                .totalVotos(total)
-                .totalSessoes(totalSessoes.intValue())
-                .totalSim(totalSim)
-                .totalNao(totalNao).build();
+                .totalVotes(total)
+                .totalSessions(totalSessoes.intValue())
+                .yesTotal(totalSim)
+                .totalOfNo(totalNao)
+                .build();
+    }
+
+    private void verifyIfExists(final Vote vote) throws BusinessException {
+        var votoByCpfAndPauta = votoRepository.findByCpf(vote.getCpf());
+
+        if (votoByCpfAndPauta.isPresent() && (vote.isNew() || isNotUnique(vote, votoByCpfAndPauta.get()))) {
+            throw new BusinessException(null, null);
+        }
+    }
+
+    private boolean isNotUnique(Vote vote, Vote voteByCpfAndPauta) {
+        return vote.alreadyExist() && !voteByCpfAndPauta.equals(vote);
     }
 
 }
