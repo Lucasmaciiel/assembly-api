@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface SessaoRepository extends JpaRepository<Session, Integer> {
+public interface SessionRepository extends JpaRepository<Session, Integer> {
 
     Optional<Session> findByIdAndPautaId(Integer id, Integer pautaId);
 

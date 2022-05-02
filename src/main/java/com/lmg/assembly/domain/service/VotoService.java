@@ -8,7 +8,7 @@ import com.lmg.assembly.common.exception.VoteAlreadyExistsException;
 import com.lmg.assembly.domain.dto.ValidationCpfDTO;
 import com.lmg.assembly.infrastructure.model.Session;
 import com.lmg.assembly.infrastructure.model.Vote;
-import com.lmg.assembly.infrastructure.repository.VotoRepository;
+import com.lmg.assembly.infrastructure.repository.VoteRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -40,18 +40,18 @@ public class VotoService {
     @Value("${app.integracao.cpf.url}")
     private String urlCpfValidator = "";
 
-    private final VotoRepository votoRepository;
+    private final VoteRepository voteRepository;
     private final RestTemplate restTemplate;
     private final SessaoService sessaoService;
 
-    public VotoService(VotoRepository votoRepository, RestTemplate restTemplate, SessaoService sessaoService) {
-        this.votoRepository = votoRepository;
+    public VotoService(VoteRepository voteRepository, RestTemplate restTemplate, SessaoService sessaoService) {
+        this.voteRepository = voteRepository;
         this.restTemplate = restTemplate;
         this.sessaoService = sessaoService;
     }
 
     public Vote findById(Integer id) {
-        var vote = votoRepository.findById(id);
+        var vote = voteRepository.findById(id);
         if (!vote.isPresent()) {
             throw new EntityNotFoundException(VOTE_NOT_FOUND + id);
         }
@@ -69,7 +69,7 @@ public class VotoService {
 
     private Vote verifyAndSave(final Session session, final Vote vote) {
         verifyVoto(session, vote);
-        return votoRepository.save(vote);
+        return voteRepository.save(vote);
     }
 
     protected void verifyVoto(final Session session, final Vote vote) {
@@ -84,7 +84,7 @@ public class VotoService {
     }
 
     protected void voteAlreadyExists(final Vote vote) {
-        Optional<Vote> voteByCpfAndPauta = votoRepository.findByCpfAndPautaId(vote.getCpf(), vote.getPauta().getId());
+        Optional<Vote> voteByCpfAndPauta = voteRepository.findByCpfAndPautaId(vote.getCpf(), vote.getPauta().getId());
 
         if (voteByCpfAndPauta.isPresent()) {
             throw new VoteAlreadyExistsException(VOTE_ALREADY_EXISTS_FOR_THIS_CPF + vote.getCpf());
@@ -114,19 +114,19 @@ public class VotoService {
     }
 
     public List<Vote> findAll() {
-        return votoRepository.findAll();
+        return voteRepository.findAll();
     }
 
     public void delete(Integer id) {
-        var votoById = votoRepository.findById(id);
+        var votoById = voteRepository.findById(id);
         if (!votoById.isPresent()) {
             throw new EntityNotFoundException(VOTE_NOT_FOUND + id);
         }
-        votoRepository.delete(votoById.get());
+        voteRepository.delete(votoById.get());
     }
 
     public List<Vote> findVotosByPautaId(Integer id) {
-        Optional<List<Vote>> findByPautaId = votoRepository.findByPautaId(id);
+        Optional<List<Vote>> findByPautaId = voteRepository.findByPautaId(id);
 
         if (!findByPautaId.isPresent()) {
             throw new EntityNotFoundException(VOTE_NOT_FOUND + id);

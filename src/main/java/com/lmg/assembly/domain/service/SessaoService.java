@@ -3,7 +3,7 @@ package com.lmg.assembly.domain.service;
 import com.lmg.assembly.common.exception.EntityNotFoundException;
 import com.lmg.assembly.infrastructure.model.Session;
 import com.lmg.assembly.infrastructure.repository.PautaRepository;
-import com.lmg.assembly.infrastructure.repository.SessaoRepository;
+import com.lmg.assembly.infrastructure.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +17,7 @@ public class SessaoService {
     public static final String PAUTA_NOT_FOUND = "Pauta não encontrada com o ID: ";
     public static final String SESSION_NOT_FOUND = "Sessão não encontrada com o ID: ";
 
-    private final SessaoRepository sessaoRepository;
+    private final SessionRepository sessionRepository;
     private final PautaRepository pautaRepository;
 
     public Session createSession(Integer id, Session session) {
@@ -32,11 +32,11 @@ public class SessaoService {
 
     public void delete(Integer id) {
         var sessao = this.findById(id);
-        sessaoRepository.delete(sessao);
+        sessionRepository.delete(sessao);
     }
 
     public Session findById(Integer id) {
-        var sessao = sessaoRepository.findById(id);
+        var sessao = sessionRepository.findById(id);
         if (!sessao.isPresent()) {
             throw new EntityNotFoundException(SESSION_NOT_FOUND + id);
         }
@@ -44,11 +44,11 @@ public class SessaoService {
     }
 
     public List<Session> findAll() {
-        return sessaoRepository.findAll();
+        return sessionRepository.findAll();
     }
 
     public Session findByIdAndPautaId(Integer sessaoId, Integer pautaId) {
-        var findByIdAndPautaId = sessaoRepository.findByIdAndPautaId(sessaoId, pautaId);
+        var findByIdAndPautaId = sessionRepository.findByIdAndPautaId(sessaoId, pautaId);
         if (!findByIdAndPautaId.isPresent()) {
             throw new EntityNotFoundException("Sessão com o ID: " + sessaoId + ", não existe na Pauta de ID: " + pautaId);
         }
@@ -63,6 +63,6 @@ public class SessaoService {
             session.setSessionExpirationMinutes(1);
         }
 
-        return sessaoRepository.save(session);
+        return sessionRepository.save(session);
     }
 }

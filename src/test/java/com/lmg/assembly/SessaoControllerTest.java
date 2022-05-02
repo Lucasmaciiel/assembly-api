@@ -2,10 +2,14 @@ package com.lmg.assembly;
 
 import com.lmg.assembly.infrastructure.model.Pauta;
 import com.lmg.assembly.infrastructure.model.Session;
+import com.lmg.assembly.infrastructure.repository.PautaRepository;
+import com.lmg.assembly.infrastructure.repository.SessionRepository;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
@@ -19,7 +23,8 @@ import static io.restassured.RestAssured.given;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestPropertySource("/application-test.properties")
-class SessaoAPITest {
+@DisplayName("Teste da camada SessaoController")
+class SessaoControllerTest {
 
     public static final int SESSAO_ID_INEXISTENTE = 999;
     public static final int SESSAO_ID_EXISTENTE = 1;
@@ -27,12 +32,17 @@ class SessaoAPITest {
     @LocalServerPort
     private int port;
 
+    @Autowired
+    private SessionRepository sessionRepository;
+
+    @Autowired
+    private PautaRepository pautaRepository;
+
     @BeforeEach
     public void setUp() {
         enableLoggingOfRequestAndResponseIfValidationFails();
         RestAssured.port = port;
-//        RestAssured.basePath = "/assembleia-api/sessao/pautas/sessoes";
-        prepararDados();
+        prepareData();
     }
 
     @Test
@@ -50,14 +60,10 @@ class SessaoAPITest {
     void deveRetornarStatus201_QuandoAbrirUmaSessaoCorretamente() {
 
         given()
-                .basePath("/assembleia-api/sessao")
-                .body("{ \n" +
-                        "  \"minutesValidity\": 10,\n" +
-                        "  \"pauta\": {\n" +
-                        "    \"id\": 2,\n" +
-                        "    \"name\": \"Nova Pauta\"\n" +
-                        "  },\n" +
-                        "  \"startDate\": \"2021-05-25T09:41:00.582Z\"\n" +
+                .basePath("/assembleia-api/sessao/pautas/1/sessoes")
+                .body("{\n" +
+                        "  \"sessionExpirationMinutes\": 10,\n" +
+                        "  \"startDate\": \"2022-05-02T21:42:54.929Z\"\n" +
                         "}")
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
@@ -91,15 +97,19 @@ class SessaoAPITest {
                 .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
-    private void prepararDados() {
-        var pauta = new Pauta(1, "Nova Pauta");
 
-        Session.builder()
+    private void prepareData() {
+        var pauta = new Pauta(1, "Nova Pauta");
+        pautaRepository.save(pauta);
+
+        var session = Session.builder()
                 .id(1)
                 .startDate(LocalDateTime.now())
                 .sessionExpirationMinutes(10)
                 .pauta(pauta)
                 .build();
+
+        sessionRepository.save(session);
     }
 
 }

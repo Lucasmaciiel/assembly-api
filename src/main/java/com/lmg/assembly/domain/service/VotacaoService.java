@@ -4,8 +4,8 @@ import com.lmg.assembly.common.exception.BusinessException;
 import com.lmg.assembly.common.exception.EntityNotFoundException;
 import com.lmg.assembly.domain.dto.VotationDTO;
 import com.lmg.assembly.infrastructure.model.Vote;
-import com.lmg.assembly.infrastructure.repository.SessaoRepository;
-import com.lmg.assembly.infrastructure.repository.VotoRepository;
+import com.lmg.assembly.infrastructure.repository.SessionRepository;
+import com.lmg.assembly.infrastructure.repository.VoteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,28 +19,28 @@ public class VotacaoService {
     public static final String VOTO_NAO_ENCONTRADO = "Voto não encontrado: ";
     public static final String VOTACAO_NAO_ENCONTRADA = "Votação não encontrada";
 
-    private final VotoRepository votoRepository;
-    private final SessaoRepository sessaoRepository;
+    private final VoteRepository voteRepository;
+    private final SessionRepository sessionRepository;
 
     public Vote save(final Vote vote) {
         this.verifyIfExists(vote);
-        return votoRepository.save(vote);
+        return voteRepository.save(vote);
     }
 
     public List<Vote> findAll() {
-        return votoRepository.findAll();
+        return voteRepository.findAll();
     }
 
     public void delete(Vote vote) {
-        var votoById = votoRepository.findById(vote.getId());
+        var votoById = voteRepository.findById(vote.getId());
         if (!votoById.isPresent()) {
             throw new EntityNotFoundException(VOTO_NAO_ENCONTRADO + vote.getId());
         }
-        votoRepository.delete(vote);
+        voteRepository.delete(vote);
     }
 
     public List<Vote> findVotosByPautaId(Integer id) {
-        Optional<List<Vote>> findByPautaId = votoRepository.findByPautaId(id);
+        Optional<List<Vote>> findByPautaId = voteRepository.findByPautaId(id);
 
         if (!findByPautaId.isPresent()) {
             throw new EntityNotFoundException(VOTO_NAO_ENCONTRADO + id);
@@ -61,7 +61,7 @@ public class VotacaoService {
      * @return
      */
     public VotationDTO buildVotacaoPauta(Integer id) {
-        Optional<List<Vote>> votosByPauta = votoRepository.findByPautaId(id);
+        Optional<List<Vote>> votosByPauta = voteRepository.findByPautaId(id);
         if (!votosByPauta.isPresent() || votosByPauta.get().isEmpty()) {
             throw new EntityNotFoundException(VOTACAO_NAO_ENCONTRADA);
         }
@@ -70,7 +70,7 @@ public class VotacaoService {
 
         var pauta = votes.iterator().next().getPauta();
 
-        Long totalSessoes = sessaoRepository.countByPautaId(pauta.getId());
+        Long totalSessoes = sessionRepository.countByPautaId(pauta.getId());
 
         Integer total = votes.size();
 
@@ -89,7 +89,7 @@ public class VotacaoService {
     }
 
     private void verifyIfExists(final Vote vote) throws BusinessException {
-        var votoByCpfAndPauta = votoRepository.findByCpf(vote.getCpf());
+        var votoByCpfAndPauta = voteRepository.findByCpf(vote.getCpf());
 
         if (votoByCpfAndPauta.isPresent() && (vote.isNew() || isNotUnique(vote, votoByCpfAndPauta.get()))) {
             throw new BusinessException(null, null);
