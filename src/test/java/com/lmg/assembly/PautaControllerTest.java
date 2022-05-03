@@ -21,8 +21,6 @@ class PautaControllerTest {
 
     public static final int PAUTA_ID_INEXISTENTE = 999;
     public static final int PAUTA_ID_EXISTENTE = 1;
-    public static final String PAUTA_NOME = "Nova Pauta";
-    public static final String SESSAO_ID = "1";
 
     @LocalServerPort
     private int port;
