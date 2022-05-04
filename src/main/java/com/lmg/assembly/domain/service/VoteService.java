@@ -3,7 +3,6 @@ package com.lmg.assembly.domain.service;
 import com.lmg.assembly.common.exception.CpfCanNotExecuteThisOperationException;
 import com.lmg.assembly.common.exception.CpfInvalidException;
 import com.lmg.assembly.common.exception.SessionExpiredException;
-import com.lmg.assembly.common.exception.SessionInvalidException;
 import com.lmg.assembly.common.exception.VoteAlreadyExistsException;
 import com.lmg.assembly.domain.dto.ValidationCpfDTO;
 import com.lmg.assembly.infrastructure.model.Session;
@@ -27,11 +26,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-public class VotoService {
+public class VoteService {
 
     private static final String CPF_UNABLE_TO_VOTE = "UNABLE_TO_VOTE";
     public static final String VOTE_NOT_FOUND = "Voto não encontrado com ID: ";
-    public static final String INVALID_SESSION = "Sessão inválida";
     public static final String EXPIRED_SESSION = "Tempo de sessão expirada";
     public static final String VOTE_ALREADY_EXISTS_FOR_THIS_CPF = "Voto ja existente para o CPF: ";
     public static final String NECESSARY_TO_BE_COOPERATE = "Este CPF não pode executar essa operação, é necessário ser cooperado";
@@ -42,27 +40,25 @@ public class VotoService {
 
     private final VoteRepository voteRepository;
     private final RestTemplate restTemplate;
-    private final SessaoService sessaoService;
+    private final SessionService sessionService;
 
-    public VotoService(VoteRepository voteRepository, RestTemplate restTemplate, SessaoService sessaoService) {
+    public VoteService(VoteRepository voteRepository, RestTemplate restTemplate, SessionService sessionService) {
         this.voteRepository = voteRepository;
         this.restTemplate = restTemplate;
-        this.sessaoService = sessaoService;
+        this.sessionService = sessionService;
     }
 
     public Vote findById(Integer id) {
         var vote = voteRepository.findById(id);
         if (!vote.isPresent()) {
-            throw new EntityNotFoundException(VOTE_NOT_FOUND + id);
+            throw new com.lmg.assembly.common.exception.EntityNotFoundException(VOTE_NOT_FOUND + id);
         }
         return vote.get();
     }
 
     public Vote createVoto(Integer idPauta, Integer idSessao, Vote vote) {
-        var sessao = sessaoService.findByIdAndPautaId(idSessao, idPauta);
-        if (!idPauta.equals(sessao.getPauta().getId())) {
-            throw new SessionInvalidException(INVALID_SESSION);
-        }
+        var sessao = sessionService.findByIdAndPautaId(idSessao, idPauta);
+
         vote.setPauta(sessao.getPauta());
         return verifyAndSave(sessao, vote);
     }

@@ -3,7 +3,7 @@ package com.lmg.assembly.domain.controller;
 import com.lmg.assembly.domain.dto.VoteDTO;
 import com.lmg.assembly.domain.form.VoteForm;
 import com.lmg.assembly.domain.mapper.VoteModelMapper;
-import com.lmg.assembly.domain.service.VotoService;
+import com.lmg.assembly.domain.service.VoteService;
 import com.lmg.assembly.infrastructure.model.Vote;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -30,7 +30,7 @@ import java.util.Optional;
 @Api(value = "Voto", tags = {"Voto"})
 public class VoteController {
 
-    private final VotoService votoService;
+    private final VoteService voteService;
     private final VoteModelMapper voteModelMapper;
 
     @ApiOperation(value = "Cria um voto")
@@ -39,7 +39,7 @@ public class VoteController {
     })
     public ResponseEntity<VoteDTO> save(@PathVariable Integer idPauta, @PathVariable Integer idSessao, @RequestBody VoteForm voteForm) {
         var vote = voteModelMapper.toModel(voteForm);
-        Vote obj = votoService.createVoto(idPauta, idSessao, vote);
+        Vote obj = voteService.createVoto(idPauta, idSessao, vote);
         return new ResponseEntity<>(voteModelMapper.toDTO(obj), HttpStatus.CREATED);
     }
 
@@ -49,7 +49,7 @@ public class VoteController {
             @ApiResponse(code = 200, message = "Retorna quando o voto foi encontrado com sucesso ou a lista de votos está vazia")
     })
     public ResponseEntity<List<VoteDTO>> findAll() {
-        return new ResponseEntity<>(voteModelMapper.toCollectionDTO(votoService.findAll()), HttpStatus.OK);
+        return new ResponseEntity<>(voteModelMapper.toCollectionDTO(voteService.findAll()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Busca voto pelo ID")
@@ -58,7 +58,7 @@ public class VoteController {
     })
     @GetMapping("/pautas/sessoes/votos/{id}")
     public ResponseEntity<VoteDTO> findById(@PathVariable Integer id) {
-        Vote obj = this.votoService.findById(id);
+        Vote obj = this.voteService.findById(id);
         return new ResponseEntity<>(voteModelMapper.toDTO(obj), HttpStatus.OK);
     }
 
@@ -66,15 +66,15 @@ public class VoteController {
     @GetMapping("/pautas/{id}/sessoes/votos")
     @ResponseStatus(code = HttpStatus.OK)
     public List<VoteDTO> findVotosByPautaId(@PathVariable Integer id) {
-        return voteModelMapper.toCollectionDTO(votoService.findVotosByPautaId(id));
+        return voteModelMapper.toCollectionDTO(voteService.findVotosByPautaId(id));
     }
 
     @ApiOperation(value = "Deleta um Voto")
     @DeleteMapping("/pautas/sessoes/votos/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
-        Optional<Vote> voto = Optional.ofNullable(this.votoService.findById(id));
+        Optional<Vote> voto = Optional.ofNullable(this.voteService.findById(id));
         return voto.map(value -> {
-            this.votoService.delete(value.getId());
+            this.voteService.delete(value.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }

@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @AllArgsConstructor
-public class VotacaoService {
+public class VotationService {
 
     public static final String VOTO_NAO_ENCONTRADO = "Voto não encontrado: ";
     public static final String VOTACAO_NAO_ENCONTRADA = "Votação não encontrada";

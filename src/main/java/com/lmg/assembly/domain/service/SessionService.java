@@ -1,6 +1,7 @@
 package com.lmg.assembly.domain.service;
 
 import com.lmg.assembly.common.exception.EntityNotFoundException;
+import com.lmg.assembly.common.exception.SessionInvalidException;
 import com.lmg.assembly.infrastructure.model.Session;
 import com.lmg.assembly.infrastructure.repository.PautaRepository;
 import com.lmg.assembly.infrastructure.repository.SessionRepository;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class SessaoService {
+public class SessionService {
 
     public static final String PAUTA_NOT_FOUND = "Pauta não encontrada com o ID: ";
     public static final String SESSION_NOT_FOUND = "Sessão não encontrada com o ID: ";
@@ -50,7 +51,7 @@ public class SessaoService {
     public Session findByIdAndPautaId(Integer sessaoId, Integer pautaId) {
         var findByIdAndPautaId = sessionRepository.findByIdAndPautaId(sessaoId, pautaId);
         if (!findByIdAndPautaId.isPresent()) {
-            throw new EntityNotFoundException("Sessão com o ID: " + sessaoId + ", não existe na Pauta de ID: " + pautaId);
+            throw new SessionInvalidException("Sessão com o ID: " + sessaoId + ", não existe na Pauta de ID: " + pautaId);
         }
         return findByIdAndPautaId.get();
     }

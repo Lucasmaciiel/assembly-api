@@ -1,7 +1,7 @@
 package com.lmg.assembly.domain.controller;
 
 import com.lmg.assembly.domain.dto.VotationDTO;
-import com.lmg.assembly.domain.service.VotacaoService;
+import com.lmg.assembly.domain.service.VotationService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.AllArgsConstructor;
@@ -18,12 +18,12 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(value = "Votação", tags = {"Votação"})
 public class VotationController {
 
-    private final VotacaoService votacaoService;
+    private final VotationService votationService;
 
     @ApiOperation(value = "Retorna o resultado da votação")
     @GetMapping("pautas/{idPauta}/votacao")
     @ResponseStatus(code = HttpStatus.OK)
     public VotationDTO findVotosByPautaId(@PathVariable Integer idPauta) {
-        return votacaoService.getResultVotacao(idPauta);
+        return votationService.getResultVotacao(idPauta);
     }
 }

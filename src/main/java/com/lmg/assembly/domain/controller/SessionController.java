@@ -3,7 +3,7 @@ package com.lmg.assembly.domain.controller;
 import com.lmg.assembly.domain.dto.SessionDTO;
 import com.lmg.assembly.domain.form.SessionForm;
 import com.lmg.assembly.domain.mapper.SessionModelMapper;
-import com.lmg.assembly.domain.service.SessaoService;
+import com.lmg.assembly.domain.service.SessionService;
 import com.lmg.assembly.infrastructure.model.Session;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -31,7 +31,7 @@ import java.util.Optional;
 @Api(value = "Sessão", tags = {"Sessão"})
 public class SessionController {
 
-    private final SessaoService sessaoService;
+    private final SessionService sessionService;
     private final SessionModelMapper sessionModelMapper;
 
     @ApiOperation(value = "Abre uma sessão de votação em uma Pauta")
@@ -41,7 +41,7 @@ public class SessionController {
     })
     public ResponseEntity<SessionDTO> save(@PathVariable Integer idPauta, @Valid @RequestBody SessionForm sessionForm) {
         var session = sessionModelMapper.toModel(sessionForm);
-        Session obj = sessaoService.createSession(idPauta, session);
+        Session obj = sessionService.createSession(idPauta, session);
         return new ResponseEntity<>(sessionModelMapper.toDTO(obj), HttpStatus.CREATED);
     }
 
@@ -52,16 +52,16 @@ public class SessionController {
     })
     @GetMapping("pautas/sessoes/{id}")
     public ResponseEntity<SessionDTO> findById(@PathVariable Integer id) {
-        Session obj = this.sessaoService.findById(id);
+        Session obj = this.sessionService.findById(id);
         return new ResponseEntity<>(sessionModelMapper.toDTO(obj), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Deleta uma sessão")
     @DeleteMapping("pautas/sessoes/{id}")
     public ResponseEntity<?> delete(@PathVariable Integer id) {
-        Optional<Session> sessao = Optional.ofNullable(this.sessaoService.findById(id));
+        Optional<Session> sessao = Optional.ofNullable(this.sessionService.findById(id));
         return sessao.map(value -> {
-            this.sessaoService.delete(value.getId());
+            this.sessionService.delete(value.getId());
             return new ResponseEntity<>(HttpStatus.OK);
         }).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
@@ -72,14 +72,14 @@ public class SessionController {
             @ApiResponse(code = 200, message = "Retorna quando a sessão foi encontrada com sucesso ou a lista de sessões está vazia")
     })
     public ResponseEntity<List<SessionDTO>> findAll() {
-        return new ResponseEntity<>(sessionModelMapper.toCollectionDTO(sessaoService.findAll()), HttpStatus.OK);
+        return new ResponseEntity<>(sessionModelMapper.toCollectionDTO(sessionService.findAll()), HttpStatus.OK);
     }
 
     @ApiOperation(value = "Busca sessões por Pauta")
     @GetMapping("pautas/{id}/sessoes/{idSessao}")
     @ResponseStatus(code = HttpStatus.OK)
     public SessionDTO findSessaoByIdAndPautaId(@PathVariable Integer id, @PathVariable Integer idSessao) {
-        Session obj = sessaoService.findByIdAndPautaId(idSessao, id);
+        Session obj = sessionService.findByIdAndPautaId(idSessao, id);
         return sessionModelMapper.toDTO(obj);
     }
 }
