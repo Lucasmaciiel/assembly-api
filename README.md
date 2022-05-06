@@ -1,4 +1,4 @@
-#Assembleia API
+# Assembleia API
 
 No cooperativismo, cada associado possui um voto e as decisões são tomadas em assembleias, por votação. Imagine que você deve criar uma solução para dispositivos móveis para gerenciar e participar dessas sessões de votação.
 
@@ -14,10 +14,10 @@ Essa solução deve ser executada na nuvem e promover as seguintes funcionalidad
 É importante que as pautas e os votes sejam persistidos e que não sejam perdidos com o restart da aplicação.
 
 
-##Informações
+## Informações
 * Documentação da API - https://lmg-assembleia.herokuapp.com/swagger-ui.html
 
-##Para rodar localmente
+## Para rodar localmente
 * Ao rodar o projeto localmente verificar a porta do postgresql, username e password no arquivo application.properties
 * Para rodar os testes de Integração rodar o comando:
 
@@ -28,7 +28,7 @@ Essa solução deve ser executada na nuvem e promover as seguintes funcionalidad
 * `docker ps` - Verifica se está rodando
 * Endereço da API: http://localhost:8080/
 
-##Tecnologias
+## Tecnologias
 * Java 11
 * Spring boot
 * Spring data
