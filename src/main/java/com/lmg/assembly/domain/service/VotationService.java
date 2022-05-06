@@ -8,6 +8,7 @@ import com.lmg.assembly.infrastructure.repository.SessionRepository;
 import com.lmg.assembly.infrastructure.repository.VoteRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,7 @@ public class VotationService {
     private final VoteRepository voteRepository;
     private final SessionRepository sessionRepository;
 
+    @Transactional
     public Vote save(final Vote vote) {
         this.verifyIfExists(vote);
         return voteRepository.save(vote);
@@ -31,6 +33,7 @@ public class VotationService {
         return voteRepository.findAll();
     }
 
+    @Transactional
     public void delete(Vote vote) {
         var votoById = voteRepository.findById(vote.getId());
         if (!votoById.isPresent()) {

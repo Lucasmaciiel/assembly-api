@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
-public class PautaModelMapper {
+public class PautaMapper {
 
     @Autowired
     private ModelMapper modelMapper;

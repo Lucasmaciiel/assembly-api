@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.NotEmpty;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -13,6 +15,7 @@ import lombok.Setter;
 @EqualsAndHashCode
 public class PautaForm {
 
+    @NotEmpty(message = "Campo nome é obrigatório")
     private String name;
 
 }

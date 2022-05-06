@@ -114,11 +114,8 @@ public class VoteService {
     }
 
     public void delete(Integer id) {
-        var votoById = voteRepository.findById(id);
-        if (!votoById.isPresent()) {
-            throw new EntityNotFoundException(VOTE_NOT_FOUND + id);
-        }
-        voteRepository.delete(votoById.get());
+        var vote = this.findById(id);
+        voteRepository.delete(vote);
     }
 
     public List<Vote> findVotosByPautaId(Integer id) {

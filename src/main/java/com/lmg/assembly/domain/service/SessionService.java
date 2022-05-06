@@ -7,6 +7,7 @@ import com.lmg.assembly.infrastructure.repository.PautaRepository;
 import com.lmg.assembly.infrastructure.repository.SessionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +22,7 @@ public class SessionService {
     private final SessionRepository sessionRepository;
     private final PautaRepository pautaRepository;
 
+    @Transactional
     public Session createSession(Integer id, Session session) {
         var pauta = pautaRepository.findById(id);
         if (!pauta.isPresent()) {
@@ -31,6 +33,7 @@ public class SessionService {
         return save(session);
     }
 
+    @Transactional
     public void delete(Integer id) {
         var sessao = this.findById(id);
         sessionRepository.delete(sessao);
