@@ -86,7 +86,7 @@ class SessaoControllerTest {
     }
 
     @Test
-    void deveRetornarStatus404_QuandoConsultarSessaoInexistente() {
+    void deveRetornarStatus400_QuandoConsultarSessaoInexistente() {
         given()
                 .basePath("/assembleia-api/sessao/pautas/1/sessoes")
                 .pathParam("sessaoId", SESSAO_ID_INEXISTENTE)
@@ -94,7 +94,7 @@ class SessaoControllerTest {
                 .when()
                 .get("/{sessaoId}")
                 .then()
-                .statusCode(HttpStatus.NOT_FOUND.value());
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
 
