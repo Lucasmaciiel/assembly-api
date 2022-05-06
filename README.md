@@ -23,7 +23,9 @@ Essa solução deve ser executada na nuvem e promover as seguintes funcionalidad
 
 `./mvnw verify`
 
-* Necessário instalar o banco postgres
+* Necessário instalar o banco postgres, caso tenha o docker instalado na máquina pode rodar o docker compose que se encontra na raiz do projeto, ele criará uma instância do postgres:
+* `docker-compose up -d` - Instala o postgres
+* `docker ps` - Verifica se está rodando
 * Endereço da API: http://localhost:8080/
 
 ##Tecnologias
