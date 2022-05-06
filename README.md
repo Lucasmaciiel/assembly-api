@@ -15,14 +15,15 @@ Essa solução deve ser executada na nuvem e promover as seguintes funcionalidad
 
 
 ##Informações
+* Documentação da API - https://lmg-assembleia.herokuapp.com/swagger-ui.html
 
-* Necessário instalar o banco postgres
-* Endereço da API: http://localhost:8080/assembleia-api/
-* Para acessar a documentação no Swagger - http://localhost:8080/assembleia-api/swagger-ui.html
+##Para rodar localmente
+* Ao rodar o projeto localmente verificar a porta do postgresql, username e password no arquivo application.properties
 * Para rodar os testes de Integração rodar o comando - ./mvnw verify
-* Obs: Ao rodar o projeto localmente verificar a porta do postgresql, username e password no arquivo application.properties
+* Necessário instalar o banco postgres
+* Endereço da API: http://localhost:8080/
 
-##Tecnologias
+## Tecnologias
 * Java 11
 * Spring boot
 * Spring data
